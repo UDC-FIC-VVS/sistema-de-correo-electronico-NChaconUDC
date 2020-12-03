@@ -69,9 +69,9 @@ public class Carpeta extends CorreoAbstracto {
     }
 
     public void añadir(Correo correo) throws OperacionInvalida {
-	if (correo.obtenerPadre() != null) {
-	    correo.obtenerPadre().eliminar(correo);
-	}
+        if (correo.obtenerPadre() != null) {
+            correo.obtenerPadre().eliminar(correo);
+        }
         ((CorreoAbstracto) correo).establecerPadre(this);
         _hijos.addElement(correo);
     }
@@ -83,7 +83,7 @@ public class Carpeta extends CorreoAbstracto {
     }
 
     public Correo obtenerHijo(int n) throws OperacionInvalida {
-	return ((Correo)_hijos.elementAt(n));
+	    return ((Correo)_hijos.elementAt(n));
 
     }
 
