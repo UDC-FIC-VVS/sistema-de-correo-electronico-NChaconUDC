@@ -12,6 +12,8 @@ import gal.udc.fic.vvs.email.archivador.ArchivadorSimple;
 import gal.udc.fic.vvs.email.archivador.DecoradorArchivador;
 import gal.udc.fic.vvs.email.archivador.Delegado;
 import gal.udc.fic.vvs.email.archivador.Log;
+import gal.udc.fic.vvs.email.archivo.Audio;
+import gal.udc.fic.vvs.email.archivo.Imagen;
 import gal.udc.fic.vvs.email.archivo.Texto;
 import gal.udc.fic.vvs.email.correo.Carpeta;
 import gal.udc.fic.vvs.email.correo.CarpetaLimitada;
@@ -89,6 +91,42 @@ public class AppTest {
     }
 
     //Archivo
+    @Test
+    public void testAudioObtenerMimeType() {
+        Audio audio = new Audio("nombre", "contenido");
+
+
+        String output = "";
+        try {
+            Method method = Audio.class.getDeclaredMethod("obtenerMimeType");
+            method.setAccessible(true);
+            output = (String) method.invoke(audio);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException |
+            IllegalArgumentException | InvocationTargetException e) {
+                e.printStackTrace();
+        }
+        
+        assertEquals("audio/ogg", output);
+    }
+
+    @Test
+    public void testImagenObtenerMimeType() {
+        Imagen img = new Imagen("nombre", "contenido");
+
+
+        String output = "";
+        try {
+            Method method = Imagen.class.getDeclaredMethod("obtenerMimeType");
+            method.setAccessible(true);
+            output = (String) method.invoke(img);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException |
+            IllegalArgumentException | InvocationTargetException e) {
+                e.printStackTrace();
+        }
+        
+        assertEquals("image/png", output);
+    }
+
     @Test
     public void testTextoObtenerMimeType() {
         Texto texto = new Texto("nombre", "contenido");
