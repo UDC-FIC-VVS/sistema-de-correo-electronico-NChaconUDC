@@ -2,21 +2,25 @@ package gal.udc.fic.vvs.email;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Vector;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import gal.udc.fic.vvs.email.archivador.ArchivadorSimple;
 import gal.udc.fic.vvs.email.archivador.DecoradorArchivador;
 import gal.udc.fic.vvs.email.archivador.Delegado;
 import gal.udc.fic.vvs.email.archivador.Log;
+import gal.udc.fic.vvs.email.archivo.Archivo;
 import gal.udc.fic.vvs.email.archivo.Audio;
 import gal.udc.fic.vvs.email.archivo.Imagen;
 import gal.udc.fic.vvs.email.archivo.Texto;
+import gal.udc.fic.vvs.email.correo.Adjunto;
 import gal.udc.fic.vvs.email.correo.Cabecera;
 import gal.udc.fic.vvs.email.correo.Carpeta;
 import gal.udc.fic.vvs.email.correo.CarpetaLimitada;
@@ -202,6 +206,53 @@ public class AppTest {
         String output = ca.obtenerRuta();
         assertEquals("papa > nombre", output);
     }
+    
+    //Correo - Carpeta
+    @Test
+    public void testCarpetaEstablecerLeidoSaleBien() {
+    	Carpeta carpeta = new Carpeta("nombre");
+    	Correo correo = new Carpeta("nombre");
+    	try {
+			carpeta.añadir(correo);
+		} catch (OperacionInvalida e) {
+			e.printStackTrace();
+		}
+    	carpeta.establecerLeido(true);
+    	int output = carpeta.obtenerNoLeidos();
+    	assertEquals(0,output);
+    }
+    
+    /*
+    @Test
+    public void testCarpetaEstablecerLeidoSaleMal() {
+    	Carpeta carpeta = new Carpeta("nombre");
+    	Correo correo = null;
+    	String oi = "";
+    	try {
+    		carpeta.añadir(correo);
+    		carpeta.establecerLeido(true);
+    	} catch (Exception e) {
+    		oi = new OperacionInvalida("error").toString();
+    	}
+    	String expected = new OperacionInvalida("error").toString();
+    	assertEquals(expected, oi);
+    }*/
+
+    @Test
+    public void testCarpetaEstablecerLeidoSaleMal() {
+    	Carpeta carpeta = new Carpeta("nombre");
+    	Exception output = null;
+    	try {
+    		carpeta.añadir(carpeta);
+    		carpeta.establecerLeido(true);
+    	} catch (OperacionInvalida e) {
+    		output = e;
+    	} catch (NullPointerException e) {
+    		output = e;
+    	}
+    	Exception expected = new OperacionInvalida();
+    	assertEquals(expected.getClass(), output.getClass());
+    }
 
     @Test
     public void testCarpetaExplorar() {
@@ -243,5 +294,31 @@ public class AppTest {
         Collection output = carpeta.buscar("contenido");
         Collection expected = new Vector();
         assertEquals(expected, output);
+    }
+    
+    //Correo - Adjunto
+    @Test
+    public void testAdjuntoObtenerTamanho() {
+    	Archivo archi = new Texto("nombre", "contenido");
+    	Texto contenido = new Texto("nombre", "contenido");
+    	Mensaje mensaje = new Mensaje(contenido);
+    	MensajeAbstracto ma = new Cabecera(mensaje, "nombre", "valor");
+    	Adjunto adj = new Adjunto(ma, archi);
+    	
+    	int output = adj.obtenerTamaño();
+    	assertEquals(29, output);
+    }
+    
+    @Test
+    public void testAdjuntoObtenerVisualizacion() {
+    	Archivo archi = new Texto("nombre", "contenido");
+    	Texto contenido = new Texto("nombre", "contenido");
+    	Mensaje mensaje = new Mensaje(contenido);
+    	MensajeAbstracto ma = new Cabecera(mensaje, "nombre", "valor");
+    	Adjunto adj = new Adjunto(ma, archi);
+    	
+    	String output = adj.obtenerVisualizacion();
+    	String expected = "nombre: valor\ncontenido\n\nAdxunto: nombre(9 bytes, text/plain)";
+    	assertEquals(expected, output);
     }
 }
