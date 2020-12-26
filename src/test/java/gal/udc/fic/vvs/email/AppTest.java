@@ -236,7 +236,7 @@ public class AppTest {
     	}
     	String expected = new OperacionInvalida("error").toString();
     	assertEquals(expected, oi);
-    }*/
+    }
 
     @Test
     public void testCarpetaEstablecerLeidoSaleMal() {
@@ -252,7 +252,7 @@ public class AppTest {
     	}
     	Exception expected = new OperacionInvalida();
     	assertEquals(expected.getClass(), output.getClass());
-    }
+    }*/
 
     @Test
     public void testCarpetaExplorar() {
