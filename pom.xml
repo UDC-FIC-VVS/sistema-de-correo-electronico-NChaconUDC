@@ -11,6 +11,12 @@
   <name>FICmail</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
+  
+  <!-- <scm>
+    <connection> scm: svn: http: //github.com/UDC-FIC-VVS/sistema-de-correo-electronico-NChaconUDC </connection>
+    <developerConnection> scm: svn: https: //github.com/UDC-FIC-VVS/sistema-de-correo-electronico-NChaconUDC </developerConnection>
+    <url> http://example.com/view.cvs </url>
+  </scm> -->
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -99,6 +105,11 @@
     			</dependency>
   			</dependencies>
 		</plugin>
+		<plugin>
+		    <groupId>org.pitest</groupId>
+		    <artifactId>pitest-maven</artifactId>
+		    <version>LATEST</version>
+		 </plugin>
       </plugins>
     </pluginManagement>
   </build>
