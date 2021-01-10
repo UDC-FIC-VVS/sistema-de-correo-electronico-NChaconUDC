@@ -11,6 +11,12 @@
   <name>FICmail</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
+  
+  <!-- <scm>
+    <connection> scm: svn: http: //github.com/UDC-FIC-VVS/sistema-de-correo-electronico-NChaconUDC </connection>
+    <developerConnection> scm: svn: https: //github.com/UDC-FIC-VVS/sistema-de-correo-electronico-NChaconUDC </developerConnection>
+    <url> http://example.com/view.cvs </url>
+  </scm> -->
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,9 +28,26 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.13</version>
       <scope>test</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
+	<dependency>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-checkstyle-plugin</artifactId>
+	    <version>3.1.1</version>
+	</dependency>
+		<dependency>
+	    <groupId>com.tngtech.archunit</groupId>
+	    <artifactId>archunit</artifactId>
+	    <version>0.15.0</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	  <groupId>fm.void.jetm</groupId>
+	  <artifactId>jetm</artifactId>
+	  <version>1.2.3</version>
+	</dependency>
   </dependencies>
 
   <build>
@@ -69,6 +92,24 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+        <plugin>
+  			<groupId>com.github.spotbugs</groupId>
+  			<artifactId>spotbugs-maven-plugin</artifactId>
+  			<version>4.1.3</version>
+  			<dependencies>
+    			<!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+    			<dependency>
+      				<groupId>com.github.spotbugs</groupId>
+      				<artifactId>spotbugs</artifactId>
+      				<version>4.2.0</version>
+    			</dependency>
+  			</dependencies>
+		</plugin>
+		<plugin>
+		    <groupId>org.pitest</groupId>
+		    <artifactId>pitest-maven</artifactId>
+		    <version>LATEST</version>
+		 </plugin>
       </plugins>
     </pluginManagement>
   </build>
