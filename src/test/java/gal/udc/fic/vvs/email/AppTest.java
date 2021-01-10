@@ -95,19 +95,31 @@ public class AppTest {
     	assertEquals(expected, output);
     }
     
-    //Archivador - DecoradorArchivador
-    /*@Test
-    public void testDecoradorArchivadorSimpleObtenerNombre() {
-    	Archivador archi = new ArchivadorSimple("nombre", 1);
-    	Archivador deco = new DecoradorArchivador(archi);
-    	String output = archi.obtenerNombre();
-    	assertEquals("nombre", output);
-    }*/
-    
     //Archivador - Delegado
     @Test
+    public void testDelegadoAlmacenarCorreoIf() {
+        Texto contenido = new Texto("nombre", "123456");
+        Carpeta carpeta = new Carpeta("nombre");
+
+        Correo correoHijo = new Mensaje(contenido);
+        Correo correoPadre = new CarpetaLimitada(carpeta, 1);
+
+        try {
+            correoPadre.añadir(correoHijo);
+        } catch (OperacionInvalida e) {
+            e.printStackTrace();
+        }
+        ArchivadorSimple archi = new ArchivadorSimple("", 5);
+        ArchivadorSimple archiDelegado = new ArchivadorSimple("", 10);
+        Delegado delegado = new Delegado(archi);
+        delegado.establecerDelegado(archiDelegado);
+        delegado.almacenarCorreo(correoPadre);
+        assertEquals(5, delegado.obtenerEspacioDisponible());
+    }
+    
+    @Test
     public void testDelegadoAlmacenarCorreo() {
-        Texto contenido = new Texto("nombre", "c");
+        Texto contenido = new Texto("nombre", "1");
         Carpeta carpeta = new Carpeta("nombre");
 
         Correo correoHijo = new Mensaje(contenido);
@@ -120,8 +132,29 @@ public class AppTest {
         }
         ArchivadorSimple archi = new ArchivadorSimple("", 5);
         Delegado delegado = new Delegado(archi);
-        delegado.almacenarCorreo(correoPadre);
-        assertEquals(4, delegado.obtenerEspacioDisponible());
+        Boolean output = delegado.almacenarCorreo(correoPadre);
+        assertEquals(true, output);
+    }
+    
+    @Test
+    public void testDelegadoObtenerDelegado() {
+        Texto contenido = new Texto("nombre", "123456");
+        Carpeta carpeta = new Carpeta("nombre");
+
+        Correo correoHijo = new Mensaje(contenido);
+        Correo correoPadre = new CarpetaLimitada(carpeta, 1);
+
+        try {
+            correoPadre.añadir(correoHijo);
+        } catch (OperacionInvalida e) {
+            e.printStackTrace();
+        }
+        ArchivadorSimple archi = new ArchivadorSimple("", 5);
+        Archivador archiDelegado = new ArchivadorSimple("", 10);
+        Delegado delegado = new Delegado(archi);
+        delegado.establecerDelegado(archiDelegado);
+        Archivador output = delegado.obtenerDelegado();
+        assertEquals(archiDelegado, output);
     }
 
     //Archivador - Log
@@ -327,6 +360,115 @@ public class AppTest {
         assertEquals("papa > nombre", output);
     }
     
+    //Correo - CarpetaLimitada
+    @Test
+    public void testCarpetaLimitadaEstablecerLeido() {
+    	Carpeta carpeta = new Carpeta("nombre");
+    	CarpetaLimitada cl = new CarpetaLimitada(carpeta, 24);
+    	cl.establecerLeido(true);
+    	int output = cl.obtenerNoLeidos();
+    	assertEquals(0, output);
+    }
+    
+    @Test
+    public void testCarpetaLimitadaObtenerIcono() {
+    	Carpeta carpeta = new Carpeta("nombre");
+    	CarpetaLimitada cl = new CarpetaLimitada(carpeta, 24);
+    	Integer output = cl.obtenerIcono();
+    	Integer expected = new Integer(1);
+    	assertEquals(expected, output);
+    }
+    
+    @Test
+    public void testCarpetaLimitadaVisualizacion() {
+    	Carpeta carpeta = new Carpeta("nombreC");
+    	CarpetaLimitada cl = new CarpetaLimitada(carpeta, 24);
+    	Texto contenido = new Texto("nombre", "contenido");
+        Correo mensaje = new Mensaje(contenido);
+        try {
+            cl.añadir(mensaje);
+        } catch (OperacionInvalida e) {
+            e.printStackTrace();
+        }
+        String output = cl.obtenerVisualizacion();
+        String expected = "nombreC (1)";
+        assertEquals(expected, output);
+    }
+    
+    @Test
+    public void testCarpetaLimitadaExplorar() {
+        Carpeta carpeta = new Carpeta("nombre");
+        CarpetaLimitada cl = new CarpetaLimitada(carpeta, 24);
+        Collection output = new Vector();
+		try {
+			output = cl.explorar();
+		} catch (OperacionInvalida e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        Collection expected = new Vector();
+        assertEquals(expected, output);
+    }
+    
+    @Test
+    public void testCarpetaLimitadaBuscar() {
+        Carpeta carpeta = new Carpeta("nombre");
+        CarpetaLimitada cl = new CarpetaLimitada(carpeta, 24);
+        Collection output = cl.buscar("contenido");
+        Collection expected = new Vector();
+        assertEquals(expected, output);
+    }
+    
+    @Test
+    public void testCarpetaLimitadaEliminar() {
+    	Carpeta carpeta = new Carpeta("nombre");
+        CarpetaLimitada cl = new CarpetaLimitada(carpeta, 24);
+        Correo correo = new Carpeta("nombreC");
+        try {
+        	cl.añadir(correo);
+			cl.eliminar(correo);
+		} catch (OperacionInvalida e) {
+			e.printStackTrace();
+		}
+        int output = cl.obtenerNoLeidos();
+    	assertEquals(0, output);
+    }
+    
+    @Test
+    public void testCarpetaLimitadaObtenerHijo() {
+    	Carpeta carpeta = new Carpeta("nombre");
+        CarpetaLimitada cl = new CarpetaLimitada(carpeta, 24);
+        Correo correo = new Carpeta("nombreC");
+        Correo output = null;
+        Method method;
+		try {
+			correo.añadir(cl);
+	        output = correo.obtenerHijo(0);
+		} catch (SecurityException | IllegalArgumentException | OperacionInvalida e) {
+			e.printStackTrace();
+		}
+		assertEquals(cl, output);
+    }
+    
+    @Test
+    public void testCarpetaLimitadaObtenerPadre() {
+    	Carpeta carpeta = new Carpeta("nombre");
+        CarpetaLimitada cl = new CarpetaLimitada(carpeta, 24);
+        Correo correo = new Carpeta("nombreC");
+        Correo output = null;
+        Method method;
+		try {
+			//cl.establecerPadre(correo);
+			method = CarpetaLimitada.class.getDeclaredMethod("establecerPadre", Correo.class);
+	        method.setAccessible(true);
+	        method.invoke(cl, correo);
+	        output = cl.obtenerPadre();
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		assertEquals(correo, output);
+    }
+    
     //Correo - Carpeta
     @Test
     public void testCarpetaEstablecerLeidoSaleBien() {
@@ -364,6 +506,21 @@ public class AppTest {
     	Integer output = carpeta.obtenerIcono();
     	Integer expected = new Integer(1);
     	assertEquals(expected, output);
+    }
+    
+    @Test
+    public void testCarpetaVisualizacion() {
+    	Carpeta carpeta = new Carpeta("nombreC");
+    	Texto contenido = new Texto("nombre", "contenido");
+        Correo mensaje = new Mensaje(contenido);
+        try {
+            carpeta.añadir(mensaje);
+        } catch (OperacionInvalida e) {
+            e.printStackTrace();
+        }
+        String output = carpeta.obtenerVisualizacion();
+        String expected = "nombreC (1)";
+        assertEquals(expected, output);
     }
     
     @Test
